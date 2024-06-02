@@ -6,7 +6,7 @@ const { exec } = require('child_process');
 
 contextBridge.exposeInMainWorld('electron', {
   invoke: (channel, data) => {
-    let validChannels = ['load-project', 'save-dialog', 'select-image'];
+    let validChannels = ['load-project', 'save-dialog', 'select-image', 'generate-pdf'];
     if (validChannels.includes(channel)) {
       return ipcRenderer.invoke(channel, data);
     }
@@ -23,7 +23,7 @@ contextBridge.exposeInMainWorld('electron', {
       });
     });
   },
-  saveAsPDF: (latexContent, engine = 'pdflatex') => { // Add engine parameter with default to pdflatex
+  saveAsPDF: (latexContent, engine = 'pdflatex', preview = false) => {
     return new Promise((resolve, reject) => {
       const tempDir = temp.mkdirSync('latex');
       const texFile = path.join(tempDir, 'document.tex');
@@ -37,12 +37,9 @@ contextBridge.exposeInMainWorld('electron', {
       const containsGraphics = latexContent.includes('\\includegraphics');
 
       const proceedWithImageCheck = () => {
-        // Verify if the placeholder image exists
         fs.access(tempImageFile, fs.constants.F_OK, async (err) => {
           if (err) {
             console.error('Placeholder image not found:', tempImageFile);
-            
-            // Prompt the user to select an image file
             try {
               const selectedImage = await ipcRenderer.invoke('select-image');
               if (selectedImage) {
@@ -56,14 +53,11 @@ contextBridge.exposeInMainWorld('electron', {
               return;
             }
           }
-
-          // Proceed with LaTeX to PDF conversion
           convertToPDF();
         });
       };
 
       const convertToPDF = () => {
-        // Verify file write success
         fs.access(texFile, fs.constants.F_OK, (err) => {
           if (err) {
             console.error('File not found after writing:', texFile);
@@ -72,7 +66,6 @@ contextBridge.exposeInMainWorld('electron', {
           }
           console.log('File write successful:', texFile);
 
-          // Execute the specified LaTeX engine
           exec(`${engine} -output-directory=${tempDir} ${texFile}`, (error, stdout, stderr) => {
             console.log(`${engine} stdout:`, stdout);
             console.log(`${engine} stderr:`, stderr);
@@ -83,7 +76,6 @@ contextBridge.exposeInMainWorld('electron', {
             } else {
               console.log('PDF generated successfully:', pdfFile);
 
-              // Check if PDF file exists
               fs.access(pdfFile, fs.constants.F_OK, (pdfErr) => {
                 if (pdfErr) {
                   console.error('PDF file not found after generation:', pdfFile);
@@ -91,26 +83,29 @@ contextBridge.exposeInMainWorld('electron', {
                   return;
                 }
 
-                console.log('Invoking save-dialog for PDF file:', pdfFile);
-                ipcRenderer.invoke('save-dialog', pdfFile).then((saveResult) => {
-                  console.log('Save dialog result:', saveResult);
-                  if (!saveResult.canceled) {
-                    try {
-                      fs.copyFileSync(pdfFile, saveResult.filePath);
-                      console.log('PDF saved to:', saveResult.filePath);
-                      resolve(saveResult.filePath);
-                    } catch (copyError) {
-                      console.error('Error copying PDF:', copyError);
-                      reject(copyError);
+                if (preview) {
+                  resolve(pdfFile);
+                } else {
+                  ipcRenderer.invoke('save-dialog', pdfFile).then((saveResult) => {
+                    console.log('Save dialog result:', saveResult);
+                    if (!saveResult.canceled) {
+                      try {
+                        fs.copyFileSync(pdfFile, saveResult.filePath);
+                        console.log('PDF saved to:', saveResult.filePath);
+                        resolve(saveResult.filePath);
+                      } catch (copyError) {
+                        console.error('Error copying PDF:', copyError);
+                        reject(copyError);
+                      }
+                    } else {
+                      console.log('Save dialog was canceled');
+                      resolve(null);
                     }
-                  } else {
-                    console.log('Save dialog was canceled');
-                    resolve(null);
-                  }
-                }).catch((saveErr) => {
-                  console.error('Error during save dialog:', saveErr);
-                  reject(saveErr);
-                });
+                  }).catch((saveErr) => {
+                    console.error('Error during save dialog:', saveErr);
+                    reject(saveErr);
+                  });
+                }
               });
             }
           });
