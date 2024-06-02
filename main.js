@@ -39,13 +39,31 @@ ipcMain.handle('load-project', async () => {
 
   if (!result.canceled) {
     const filePath = result.filePaths[0];
+    console.log('Project loaded from:', filePath);
     return filePath;
   }
+  return null;
 });
 
 ipcMain.handle('save-dialog', async (event, defaultPath) => {
+  console.log('Opening save dialog for:', defaultPath);
   const result = await dialog.showSaveDialog({
     defaultPath: defaultPath,
+    filters: [{ name: 'PDF Files', extensions: ['pdf'] }]
   });
+  console.log('Save dialog result:', result);
   return result;
+});
+
+ipcMain.handle('select-image', async () => {
+  const result = await dialog.showOpenDialog({
+    properties: ['openFile'],
+    filters: [{ name: 'Image Files', extensions: ['png', 'jpg', 'jpeg'] }]
+  });
+  if (!result.canceled) {
+    const filePath = result.filePaths[0];
+    console.log('Image selected:', filePath);
+    return filePath;
+  }
+  return null;
 });

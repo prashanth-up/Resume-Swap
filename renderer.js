@@ -18,9 +18,9 @@ const editor = CodeMirror(document.getElementById('editor'), {
   }
   
   // Save LaTeX content as PDF
-  async function saveAsPDF(latexContent) {
+  async function saveAsPDF(latexContent, engine) {
     try {
-      const filePath = await window.electron.saveAsPDF(latexContent);
+      const filePath = await window.electron.saveAsPDF(latexContent, engine);
       if (filePath) {
         console.log('PDF saved to:', filePath);
       }
@@ -32,7 +32,8 @@ const editor = CodeMirror(document.getElementById('editor'), {
   document.getElementById('loadProject').addEventListener('click', loadProject);
   document.getElementById('save').addEventListener('click', () => {
     const latexContent = editor.getValue();
-    console.log('Saving as PDF:', latexContent);
-    saveAsPDF(latexContent);
+    const engine = document.getElementById('engineSelect').value;
+    console.log('Saving as PDF with engine:', engine);
+    saveAsPDF(latexContent, engine);
   });
   

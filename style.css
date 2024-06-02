@@ -2,7 +2,7 @@ body {
     display: flex;
     font-family: Arial, sans-serif;
     margin: 0;
-    height: 100vh;
+    height: 1000vh;
   }
   
   #sidebar {
