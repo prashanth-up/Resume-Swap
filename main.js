@@ -79,10 +79,12 @@ ipcMain.handle('generate-pdf', async (event, latexContent) => {
   fs.writeFileSync(texFile, latexContent);
 
   return new Promise((resolve, reject) => {
-    exec(`pdflatex -output-directory=${tempDir} ${texFile}`, (error, stdout, stderr) => {
+    exec(`xelatex -output-directory=${tempDir} ${texFile}`, (error, stdout, stderr) => {
       if (error) {
+        console.error('xelatex error:', stderr);
         reject(stderr);
       } else {
+        console.log('xelatex stdout:', stdout);
         resolve(pdfFile);
       }
     });

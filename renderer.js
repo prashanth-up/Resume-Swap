@@ -34,9 +34,10 @@ const editor = CodeMirror(document.getElementById('editor'), {
   // Update the PDF preview
   async function updatePreview(latexContent) {
     try {
-      const pdfPath = await window.electron.saveAsPDF(latexContent, 'pdflatex', true);
+      const pdfPath = await window.electron.saveAsPDF(latexContent, 'xelatex', true);
       if (pdfPath) {
-        document.getElementById('preview').src = pdfPath;
+        console.log('Preview PDF path:', pdfPath);
+        document.getElementById('preview').src = `file://${pdfPath}`;
       }
     } catch (err) {
       console.error('Error updating preview:', err);
