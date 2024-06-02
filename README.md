@@ -53,6 +53,20 @@ This is perfect for users who are lazy enough to edit their resumes manually eac
    - Click the "Save as PDF" button to generate and save a PDF version of your LaTeX document.
    - You can select the desired LaTeX engine (e.g., XeLaTeX) for generating the PDF.
 
+<p align="center">
+<img src="assets/on_startup.png" width="600">
+</p>
+<p align="center">
+<img src="assets/doc_loaded.png" width="600">
+</p>
+<p align="center">
+<img src="assets/renderer_options.png" width="300">
+</p>
+<!-- ![This is on start up](https://github.com/prashanth-up/Resume-Swap/blob/main/assets/on_startup.png)
+![This is when you upload something](https://github.com/prashanth-up/Resume-Swap/blob/main/assets/doc_loaded.png)
+![TeX Renderer Options](https://github.com/prashanth-up/Resume-Swap/blob/main/assets/renderer_options.png) -->
+
+
 ## Requirements
 
 - **Node.js**: Ensure you have Node.js installed. You can download it from [Node.js](https://nodejs.org/).
