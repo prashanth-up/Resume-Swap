@@ -2,14 +2,34 @@
   "name": "resumeswap",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Prashanth Umapathy",
   "license": "ISC",
   "dependencies": {
-    "electron": "^30.0.9"
+    "codemirror": "^5.65.5",
+    "electron": "^30.0.9",
+    "pdfmake": "^0.2.7",
+    "temp": "^0.9.4"
+  },
+  "devDependencies": {
+    "electron-builder": "^23.6.0"
+  },
+  "build": {
+    "appId": "com.example.resumeswap",
+    "mac": {
+      "category": "public.app-category.productivity"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
   }
 }
