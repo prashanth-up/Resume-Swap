@@ -2,12 +2,21 @@
 <html>
 <head>
   <title>Resume Editor</title>
-  <link rel="stylesheet" type="text/css" href="style.css">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com;">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css">
 </head>
 <body>
-  <h1>Resume Editor</h1>
-  <div id="editor"></div>
-  <button id="save">Save as PDF</button>
+  <div id="sidebar">
+    <button id="loadProject">Load Project</button>
+    <button id="save">Save as PDF</button>
+  </div>
+  <div id="main">
+    <h1>Resume Editor</h1>
+    <div id="editor"></div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/stex/stex.min.js"></script>
   <script src="renderer.js"></script>
 </body>
 </html>
